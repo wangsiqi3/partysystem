@@ -242,9 +242,7 @@ export default {
     this.lists=[this.list,this.branchs,this.backgrounds]
   },
   methods:{
-    submit(){
-      console.log();
-    },
+    
     //   底部滚动选择器 民族选择器 
      showPicker() {
       this.rotate=!this.rotate
