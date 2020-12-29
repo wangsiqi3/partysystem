@@ -2,14 +2,16 @@
   <div id="infoTable">
       <div class="title">党员信息采集表</div>
       <div class="search">
-          <span class="branch"><input placeholder="接受支部" type="text"><span class="slide" :class="{rotate:show}" @click="slideDown()">></span></span>
-          <span class="name"><input  placeholder="姓名" type="text"></span>
+          <span class="branch" @click="slideDown()"><input placeholder="接收支部" v-model='value' type="text"><span class="slide" :class="{rotate:show}" >></span></span>
+          <span class="name"><input  placeholder="姓名" type="text" v-model='name'></span>
           <span class="button" :class="{active:isActive1}" @click='search()'>搜索</span>
           <span class="button" :class="{active:isActive2}" @click='clearAll()'>清空</span>
       </div>
+      <Toast :Show='toast' :message='message'></Toast>
       <div class="branch_list" v-show='show'>
-          <ul>
-              <li v-for='(item,index) in branchs' :key='index'>{{item}}</li>
+        <!-- 支部 -->
+          <ul class="branchs">
+              <li v-for='(item,index) in branchs' @click='select($event)' :key='index'>{{item}}</li>
           </ul>
       </div>
       <div class="list">
@@ -21,27 +23,11 @@
                <span>操作</span> 
             </div>
           </div>
-          <div>
+          <div v-for="(item,index) in member" :key='"="+index'>
             <div class="list_mumber">
-              <span>王思琪</span>
-              <span>南方网第二党支部</span>
-              <span>2020-01-04 09:41:00</span>
-              <span class="code">查看二维码</span>
-            </div>
-          </div>
-          <div>
-            <div class="list_mumber">
-              <span>王思琪</span>
-              <span>南方网第二党支部</span>
-              <span>2020-01-04 09:41:00</span>
-              <span class="code">查看二维码</span>
-            </div>
-          </div>
-          <div>
-            <div class="list_mumber">
-              <span>王思琪</span>
-              <span>南方网第二党支部</span>
-              <span>2020-01-04 09:41:00</span>
+              <span>{{item.username}}</span>
+              <span>{{item.branch}}</span>
+              <span>{{(new Date(item.nowDate)).Format("yyyy-MM-dd hh:mm:ss")}}</span>
               <span class="code">查看二维码</span>
             </div>
           </div>
@@ -59,22 +45,60 @@
           <span>9</span>
           <span>></span>
       </div>
-      
+       
   </div>
 </template>
 
 <script>
+Date.prototype.Format = function (fmt) { //author: meizz
+    var o = {
+        "M+": this.getMonth() + 1, //月份
+        "d+": this.getDate(), //日
+        "h+": this.getHours(), //小时
+        "m+": this.getMinutes(), //分
+        "s+": this.getSeconds(), //秒
+        "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+        "S": this.getMilliseconds() //毫秒
+    };
+    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+    for (var k in o)
+        if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+    return fmt;
+}
+import Toast from '../../components/toast/Toast'
 export default {
  name:"InfoTable",
  data(){
      return {
       show:false,
+      value:"",
+      name:"",
+      params:{},
       isActive1:true,
       isActive2:false,
-      branchs:["南方网第一党支部","南方网第二党支部","南方日报集团第一党支部","南方日报集团第二党支部","南方杂志党支部"]
+      member:[],
+      branchs:["南方网第一党支部","南方网第二党支部","南方日报集团第一党支部","南方日报集团第二党支部","南方杂志党支部"],
+      toast:false,
+      message:'',
      }
  },
+ created(){
+    this.$axios.get('/getMember').then(res=>{
+           this.member=res.data
+       })
+ },
+ components:{
+   Toast
+ },
  methods:{
+     select:function(e){
+        this.show=false
+        this.value = e.target.innerText
+        this.params={
+          receiveBranch:this.value,
+          name:this.name
+        }
+     },
      slideDown(){
       this.show=!this.show
      },
@@ -83,14 +107,35 @@ export default {
             this.isActive1=!this.isActive1
              this.isActive2=!this.isActive2 
          }
-      
+         this.show=false
+         if(this.value!==""||this.name!==""){
+           this.params={
+           receiveBranch:this.value,
+           name:this.name
+          }
+          this.$axios.post('/getlimitMember',this.params).then(res=>{
+            console.log(res.data); 
+            if(res.data.length==0){
+              this.member=res.data
+              this.toast=true; 
+              this.message='用户不存在';
+              setTimeout(()=>{
+                this.toast=false;this.message=''
+              },1500)
+              return
+            } else{
+              this.member=res.data
+            }
+          })
+         }
      },
      clearAll(){
          if(this.isActive2==false){
-             this.isActive1=!this.isActive1
-      this.isActive2=!this.isActive2 
+            this.isActive1=!this.isActive1
+            this.isActive2=!this.isActive2 
          }
-     
+        
+        this.$router.go(0)
      }
  }
 }
@@ -112,8 +157,13 @@ export default {
         ul{
             list-style: none;
             color:#888888;
+
             li{
                 padding: 5px;
+            }
+            li:hover{
+                background-color: red;
+                color:#fff;
             }
         }
     }

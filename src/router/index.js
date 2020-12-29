@@ -5,7 +5,7 @@ import Index from '../views/Index.vue'
 Vue.use(VueRouter)
 
 const routes = [{
-        path: '/index/',
+        path: '/index',
         name: 'Index',
         component: Index
     },

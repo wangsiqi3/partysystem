@@ -12,11 +12,19 @@ const routes = [{
     {
         path: '/home/edit',
         name: 'Infowrite',
-        // route level code-splitting
-        // this generates a separate chunk (about.[hash].js) for this route
-        // which is lazy-loaded when the route is visited.
         component: () =>
             import ( /* webpackChunkName: "about" */ '../views/home/Infowrite')
+    }, {
+        path: '/home/sign',
+        name: 'Sign',
+        component: () =>
+            import ( /* webpackChunkName: "about" */ '../views/home/Sign')
+    },
+    {
+        path: '/home/editdone',
+        name: 'Editdone',
+        component: () =>
+            import ( /* webpackChunkName: "about" */ '../views/home/Editdone')
     }
 ]
 

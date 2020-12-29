@@ -1,13 +1,13 @@
 <template>
   <div id="Infoform">
-    <form action="">
+    <form name='myform'>
      <div class="firstBox">
         <div class="formItem">
           <label for="username">姓名</label>
           <input type="text" id='username' placeholder="姓名"  name='username'>  
         </div>
         <div class="formItem">         
-          <label for="username">性别</label>
+          <label for="sex">性别</label>
           <div class="sex">
            <el-radio-group v-model="radio1"  text-color='#fff' fill='red'>
              <el-radio-button label="男" name='sex' id="sex"></el-radio-button>
@@ -95,10 +95,10 @@
             <input type="text" id='address' placeholder="地址精确到门牌号" name='address'>  
         </div>
      </div>
-     <input class="submit" type="submit" @submit="submit()" value="确认并签名">
+     <div class="submit"  @click="submit($event)">确认并签名</div>
     </form>
-    <!-- 底部滚动选择器 民族选择器-->
-    <div class="picker-main">
+   <!-- 底部滚动选择器 民族选择器-->
+   <div class="picker-main">
      <div
        v-if="show"
        class="picker"
@@ -169,10 +169,14 @@
     </div>
    </div>
    <!-- 底部滚动选择器 -->
+   <Toast :Show='toast' :message='message'></Toast>
   </div>
 </template>
 
 <script>
+import Toast from '../../components/toast/Toast'
+import Qs from 'qs'
+   
 export default {
  name:'Infoform',
  data () {
@@ -217,7 +221,6 @@ export default {
         active: 0,
         active2:0,
         active3:0,
-        
         nation: "",
         branch:"",
         background:'',
@@ -226,8 +229,14 @@ export default {
         listOffsetTop3: [],
         timer: null,
         timer2: null,
-        timer3: null
+        timer3: null,
+        toast:false,
+        message:'',
+        params:{},
       };
+  },
+  components:{
+   Toast
   },
   mounted(){
     const nation = ["汉族","壮族","满族","回族","珞巴族","赫哲族","塔塔尔族","独龙族","鄂伦春族","门巴族","乌孜别克族","裕固族","俄罗斯族","保安族","德昂族","基诺族","京族","怒族","鄂温克族","普米族","阿昌族","塔吉克族","布朗族","撒拉族","毛南族","景颇族","达斡尔族","柯尔克孜族","锡伯族","仫佬族","土族","羌族","纳西族","佤族","水族","拉祜族","高山族","东乡族","仡佬族","傈僳族","畲族","傣族","黎族","哈萨克族","哈尼族","白族","朝鲜族","瑶族","侗族","布依族","藏族","蒙古族","彝族","土家族","维吾尔族","苗族"]
@@ -242,7 +251,57 @@ export default {
     this.lists=[this.list,this.branchs,this.backgrounds]
   },
   methods:{
-    
+    submit:function(e){
+      this.params = {
+        username:myform.username.value,
+        sex:myform.sex.value,
+        nation:myform.nation.value,
+        idNumber:myform.idNumber.value,
+        birthDate:myform.birthDate.value,
+        school:myform.school.value,
+        background:myform.background.value,
+        category:myform.category.value,
+        branch:myform.branch.value,
+        enterDate:myform.enterDate.value,
+        probationDate:myform.probationDate.value,
+        normal:myform.normal.value,
+        filesPlace:myform.filesPlace.value,
+        phone:myform.phone.value,
+        address:myform.address.value,
+      } 
+      
+      for(let key in this.params){
+        if(this.params[key]==''){
+            this.toast=true; 
+            this.message='请填写完整'+key;
+            setTimeout(()=>{
+                this.toast=false;this.message=''
+                },
+                1500)
+            return
+        }  
+      }
+       this.params={
+        ...this.params,
+        introduce1:myform.introduce1.value,
+        introduce2:myform.introduce2.value,
+       }
+       this.$axios.post('/isExite',this.params).then(res=>{
+           if(res.data=='该用户已存在'){
+            this.toast=true; 
+            this.message=res.data;
+            setTimeout(()=>{
+                this.toast=false;this.message=''
+                },
+                1500)
+            return
+           }else{
+               this.$router.push({path:'/home/sign',query: this.params})
+           }
+       })
+       
+       
+    },
     //   底部滚动选择器 民族选择器 
      showPicker() {
       this.rotate=!this.rotate
@@ -352,10 +411,10 @@ export default {
 
 <style scoped lang='scss'>
 @import '../../style/style.scss';
-
   #Infoform{
       margin: 60px 10px 10px;
       position: relative;
+      font-size: 14px;
       .firstBox,.secondBox,.thirdBox,.forthBox{
           margin-bottom: 10px;
           background-color: #fff;
@@ -407,7 +466,9 @@ export default {
       .submit{
           width: 320px;
           height: 48px;
+          line-height: 48px;
           background-color: $color;
+          color:#fff;
 
       }
     }
