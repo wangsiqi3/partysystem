@@ -1,6 +1,6 @@
 <template>
   <div id="Homehead">
-      <span class="left" v-show='show1'>< 返回</span>
+      <span class="left" v-show='show1' @click="go()">< 返回</span>
       <span class="middle">党员信息表</span>
       <span class="right" v-show='show2'>...</span>
 
@@ -28,6 +28,12 @@ export default {
        false
      }
    }
+ },
+ methods:{
+   go(){
+    this.$router.go(-1) 
+   }
+   
  }
 }
 </script>

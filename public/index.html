@@ -18,6 +18,38 @@
         html {
             background-color: #f0f2f5;
         }
+        /* 要修改element的样式 要写在全局里面 才会生效！！！ 写在组件里面不生效 */
+        
+        .el-pagination.is-background .el-pager li:not(.disabled).active {
+            background-color: #eb4646!important;
+            color: #FFF;
+        }
+        
+        .el-pagination.is-background .el-pager li:not(.disabled):hover {
+            color: #eb4646!important;
+        }
+        
+        .el-button {
+            display: inline-block;
+            line-height: 1;
+            white-space: nowrap;
+            cursor: pointer;
+            background: #FFF;
+            border: 1px solid #DCDFE6;
+            color: #eb4646!important;
+            -webkit-appearance: none;
+            text-align: center;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            outline: 0;
+            margin: 0;
+            -webkit-transition: .1s;
+            transition: .1s;
+            font-weight: 500;
+            padding: 0.75rem 0.25rem!important;
+            font-size: 0.875rem;
+            border: 0px!important;
+        }
     </style>
 </head>
 
@@ -27,6 +59,7 @@
     </noscript>
     <div id="app"></div>
     <!-- built files will be auto injected -->
+
 </body>
 
 </html>

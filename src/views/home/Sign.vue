@@ -1,15 +1,12 @@
 <template>
   <div class="sign">
-   <Homehead :show1='true'></Homehead>
+   <Homehead></Homehead>
     <div class="signPlace">
     <div class="canvas">
-      <Canvas @comfirm='comfirm'></Canvas>  
+      <Canvas2 @comfirm='comfirm'></Canvas2>
     </div>
+    
        <!-- <canvas id="canvasbox" width="500" height="290" style="border:1px solid green; transform: rotate(90deg); margin:20px auto;display:block;"></canvas> -->
-       <span class="button">
-           <span class="clear" @click='clear()' :class="{active:isActive}">清除</span>
-           <span class="comfirm" @click="comfirm()" :class="{active:!isActive}">确认</span>
-       </span>
     </div>
   </div>
 </template>
@@ -17,7 +14,7 @@
 <script>
 
 import Homehead from './Homehead'
-import Canvas from './Canvas'
+import Canvas2 from './Canvas2.vue'
 export default {
  name:"Sign",
  data(){
@@ -28,10 +25,12 @@ export default {
  },
  components:{
      Homehead,
-     Canvas
+     Canvas2,
+
  },
  mounted(){
-   this.params = this.$route.query
+     console.log(222);
+   this.params = this.$route.params
    console.log(this.params); //拿到参数：填写的信息
  },
  methods:{
@@ -41,11 +40,13 @@ export default {
          }
      },
      comfirm:function(picture){
+         console.log(111);
          console.log(picture);
          if(this.isActive){
              this.isActive=!this.isActive
          }
-         this.$router.push({path:'/home/editdone',query: {...this.params,url:picture}})
+        //  this.$router.push({path:'/home/editdone',query: {...this.params,url:picture}})
+         this.$router.push({name:'Editdone',params: {...this.params,url:picture}})
      }
      
  }
@@ -62,7 +63,7 @@ export default {
           position: relative;
           left: -0px;
           top: 8.25rem;
-        //   transform: rotate(90deg);
+          // transform: rotate(90deg);
       }
       .info{
          display: inline-block;

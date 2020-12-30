@@ -1,8 +1,9 @@
+
 <template>
-  <div id="infoTable">
+  <div id="infoTable" >
       <div class="title">党员信息采集表</div>
       <div class="search">
-          <span class="branch" @click="slideDown()"><input placeholder="接收支部" v-model='value' type="text"><span class="slide" :class="{rotate:show}" >></span></span>
+          <span class="branch" @click="slideDown($event)"><input id="branchInput" placeholder="接收支部" v-model='value' type="text"><span class="slide" :class="{rotate:show}" >></span></span>
           <span class="name"><input  placeholder="姓名" type="text" v-model='name'></span>
           <span class="button" :class="{active:isActive1}" @click='search()'>搜索</span>
           <span class="button" :class="{active:isActive2}" @click='clearAll()'>清空</span>
@@ -23,33 +24,51 @@
                <span>操作</span> 
             </div>
           </div>
-          <div v-for="(item,index) in member" :key='"="+index'>
+          <div v-for="(item,index) in member" :key='index+key'>
             <div class="list_mumber">
               <span>{{item.username}}</span>
               <span>{{item.branch}}</span>
-              <span>{{(new Date(item.nowDate)).Format("yyyy-MM-dd hh:mm:ss")}}</span>
-              <span class="code">查看二维码</span>
+              <span>{{item.nowDate&&(new Date(item.nowDate)).Format("yyyy-MM-dd hh:mm:ss")}}</span>
+              <span class="code" @mousemove="showCode(item.idNumber)">
+                <el-popover
+                    placement="top-start"
+                    width="200"
+                    trigger="hover"
+                    >
+                  <div>
+                   <vue-qr :text="downloadData.url" :margin="0" colorDark="#f67b29" colorLight="#fff"   :size="200"></vue-qr>
+                   <a :href="downloadData.url">链接</a> 
+                  </div>
+                   
+                  <el-button slot="reference"> {{item.nowDate&&'查看二维码'}}</el-button>
+               </el-popover>
+              </span>
+              
             </div>
           </div>
       </div>
       <div class="pager">
-          <span><</span>
-          <span>1</span>
-          <span>2</span>
-          <span>3</span>
-          <span>4</span>
-          <span>5</span>
-          <span>6</span>
-          <span>7</span>
-          <span>8</span>
-          <span>9</span>
-          <span>></span>
+            <div class="block">
+                <el-pagination
+                  layout="prev, pager, next"
+                  :total='total'
+                  :page-size='pageSize'
+                  :background='true'
+                  @current-change='sizeChange'
+                >
+                 </el-pagination>
+            </div>
       </div>
+    
        
   </div>
 </template>
 
+
 <script>
+
+
+
 Date.prototype.Format = function (fmt) { //author: meizz
     var o = {
         "M+": this.getMonth() + 1, //月份
@@ -66,6 +85,7 @@ Date.prototype.Format = function (fmt) { //author: meizz
     return fmt;
 }
 import Toast from '../../components/toast/Toast'
+import vueQr from 'vue-qr'
 export default {
  name:"InfoTable",
  data(){
@@ -77,18 +97,32 @@ export default {
       isActive1:true,
       isActive2:false,
       member:[],
+      members:[],
       branchs:["南方网第一党支部","南方网第二党支部","南方日报集团第一党支部","南方日报集团第二党支部","南方杂志党支部"],
       toast:false,
       message:'',
+      total:100,
+      pageSize:3,
+      currentPage:1,
+      key:0,
+      downloadData: {
+                url: 'http://localhost:8080/home/infoshow?idNumber=445221199909262220',
+                icon: 'http://localhost:8080/home/infoshow?idNumber=445221199909262220'
+            }
      }
  },
  created(){
     this.$axios.get('/getMember').then(res=>{
            this.member=res.data
+           this.members=res.data
+           this.pageSize = 3
+           this.total = this.member.length
+           this.sizeChange(1)
        })
  },
  components:{
-   Toast
+   Toast,
+   vueQr
  },
  methods:{
      select:function(e){
@@ -99,7 +133,8 @@ export default {
           name:this.name
         }
      },
-     slideDown(){
+
+     slideDown(e){
       this.show=!this.show
      },
      search(){
@@ -125,20 +160,45 @@ export default {
               return
             } else{
               this.member=res.data
+              this.members=res.data
+              this.total = this.member.length
+              this.sizeChange(1)
             }
           })
          }
      },
+
      clearAll(){
          if(this.isActive2==false){
             this.isActive1=!this.isActive1
             this.isActive2=!this.isActive2 
          }
-        
         this.$router.go(0)
-     }
+     },
+
+     sizeChange:function(currentPage){
+       this.currentPage=currentPage;
+       let j=0;
+       this.member=[]
+       for(let i=0+(currentPage-1)*3;i<=2+(currentPage-1)*3;i++){
+         var obj = this.members[i]
+         if(this.members[i]){
+           this.member[j++] = this.members[i]
+         }
+       }
+     },
+
+     showCode:function(idNumber){
+       console.log(idNumber);
+       this.downloadData.url="http://localhost:8080/home/infoshow?idNumber="+idNumber
+       this.downloadData.icon="http://localhost:8080/home/infoshow?idNumber="+idNumber
+     },
+
+   
+
+   
+  }
  }
-}
 </script>
 
 <style scoped lang='scss'>
@@ -148,21 +208,23 @@ export default {
     position: relative;
     .title{
       padding: 10px 0px;
+      cursor: pointer;
     } 
     .branch_list{
         position: absolute;
         top: 95px;
         background-color: #fff;
         box-shadow: 0px 2px 4px 1px rgba($color: #000000, $alpha: .3);
+        z-index:999;
         ul{
             list-style: none;
             color:#888888;
-
+            
             li{
                 padding: 5px;
             }
             li:hover{
-                background-color: red;
+                background-color: $color;
                 color:#fff;
             }
         }
@@ -185,7 +247,8 @@ export default {
               right: 0px;
               top: 0px;
               transform: rotate(90deg);
-              color:#757575
+              color:#757575;
+              cursor: pointer;
           }
           .slide.rotate{
               transform: rotate(270deg);
@@ -202,6 +265,7 @@ export default {
           border: 1px solid #ccc;
           text-align: center;
           color:#919191;
+          cursor: pointer;
           
       }
       .button.active{
@@ -214,6 +278,7 @@ export default {
     .list{
         margin-bottom: 10px;
         div{
+            cursor: pointer;
             height: 40px;
             line-height: 40px;
             border-bottom: 1px solid #f3f3f3;
@@ -221,12 +286,25 @@ export default {
               margin-left: 30px;
               color:#919191;
               display: flex;
+              position: relative;
+              margin-top: 10px;
               span{
                flex:1
               }
               .code{
                   color:$color;
+                  font-size: 10px;
+                .showCode{
+                position: absolute;
+                width: 30px;
+                height: 30px;
+                background-color: red;
+                right: 129px;
+                top: 27px;
+                
               }
+              }
+              
          }
         }
         .list_Head{
@@ -243,17 +321,10 @@ export default {
     .pager{
         position: absolute;
         right: 20px;
-        span{
-            display: inline-block;
-            width: 30px;
-            height: 30px;
-            text-align: center;
-            line-height: 30px;
-            border: 1px solid #ddd;
-            color: #929292;
-            margin-left: 5px;
-        }
     }
 }
- 
+.el-pagination.is-background .el-pager li:not(.disabled).active {
+    background-color: $color!important;
+    color: #FFF;
+}
 </style>

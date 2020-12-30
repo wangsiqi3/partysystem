@@ -4,7 +4,7 @@
      <div class="firstBox">
         <div class="formItem">
           <label for="username">姓名</label>
-          <input type="text" id='username' placeholder="姓名"  name='username'>  
+          <input autoComplete="off" type="text" id='username' placeholder="姓名"  name='username'>  
         </div>
         <div class="formItem">         
           <label for="sex">性别</label>
@@ -17,12 +17,12 @@
         </div>
         <div class="formItem" @click="showPicker()">
             <label for="nation">民族</label>
-            <input type="text" id="nation" name='nation' placeholder="民族" :value='nation'>
+            <input type="text" autoComplete="off" id="nation" name='nation' placeholder="民族" :value='nation'>
             <span class="icon" :class={rotate:rotate}>></span>  
         </div>
         <div class="formItem">
             <label for="idNumber">身份证号</label>
-            <input type="number" id='idNumber' placeholder="身份证号" name='idNumber'>  
+            <input type="number" autoComplete="off" id='idNumber' placeholder="身份证号" name='idNumber'>  
         </div>
         <div class="formItem">
             <label for="birthDate">出生日期</label>
@@ -32,11 +32,11 @@
      <div class="secondBox">
         <div class="formItem">
             <label for="school">毕业院校</label>
-            <input type="text" id='school' placeholder="学校全称" name='school'>  
+            <input type="text" autoComplete="off" id='school' placeholder="学校全称" name='school'>  
         </div>
        <div class="formItem" @click="showPicker3()">
             <label for="background">学历</label>
-            <input type="text" id="background" name='background' placeholder="最高学历" :value='background'>
+            <input type="text" autoComplete="off" id="background" name='background' placeholder="最高学历" :value='background'>
             <span class="icon" :class={rotate:rotate3}>></span>  
         </div>
      </div>
@@ -52,7 +52,7 @@
         </div>
         <div class="formItem" @click="showPicker2()">
             <label for="branch">转入支部</label>
-            <input type="text" id="branch" name='branch' placeholder="组织全称" :value='branch'>
+            <input type="text" autoComplete="off" id="branch" name='branch' placeholder="组织全称" :value='branch'>
             <span class="icon" :class={rotate:rotate2}>></span>  
         </div>
         <div class="formItem">
@@ -65,11 +65,11 @@
         </div>
         <div class="formItem">
             <label for="introduce1">介绍人1</label>
-            <input type="text" id='introduce1' placeholder="介绍人姓名(选填)" name='introduce1'>  
+            <input type="text" autoComplete="off" id='introduce1' placeholder="介绍人姓名(选填)" name='introduce1'>  
         </div>
         <div class="formItem">
             <label for="introduce2">介绍人2</label>
-            <input type="text" id='introduce2' placeholder="介绍人姓名(选填)" name='introduce2'>  
+            <input type="text" autoComplete="off" id='introduce2' placeholder="介绍人姓名(选填)" name='introduce2'>  
         </div>
         <div class="formItem">         
           <label for="normal">党籍正常</label>
@@ -82,17 +82,18 @@
         </div>
         <div class="formItem">
             <label for="filesPlace">档案地</label>
-            <input type="text" id='filesPlace' placeholder="地址精确到门牌号(选填)" name='filesPlace'>  
+            <input type="text" autoComplete="off" id='filesPlace' placeholder="地址精确到门牌号(选填)" name='filesPlace'>  
         </div>
      </div>
      <div class="forthBox">
         <div class="formItem">
             <label for="phone">手机号码</label>
-            <input type="number" id='phone' placeholder="手机号码" name='phone'>  
+            <input type="number" autoComplete="off" id='phone' placeholder="手机号码" name='phone'
+             >  
         </div>
         <div class="formItem">
             <label for="address">家庭住址</label>
-            <input type="text" id='address' placeholder="地址精确到门牌号" name='address'>  
+            <input type="text" autoComplete="off" id='address' placeholder="地址精确到门牌号" name='address'>  
         </div>
      </div>
      <div class="submit"  @click="submit($event)">确认并签名</div>
@@ -265,7 +266,6 @@ export default {
         enterDate:myform.enterDate.value,
         probationDate:myform.probationDate.value,
         normal:myform.normal.value,
-        filesPlace:myform.filesPlace.value,
         phone:myform.phone.value,
         address:myform.address.value,
       } 
@@ -285,6 +285,7 @@ export default {
         ...this.params,
         introduce1:myform.introduce1.value,
         introduce2:myform.introduce2.value,
+        filesPlace:myform.filesPlace.value,
        }
        this.$axios.post('/isExite',this.params).then(res=>{
            if(res.data=='该用户已存在'){
@@ -296,7 +297,8 @@ export default {
                 1500)
             return
            }else{
-               this.$router.push({path:'/home/sign',query: this.params})
+            //    this.$router.push({path:'/home/sign',query: this.params})
+               this.$router.push({name:'Sign',params:this.params})
            }
        })
        
@@ -469,7 +471,7 @@ export default {
           line-height: 48px;
           background-color: $color;
           color:#fff;
-
+          margin: auto;
       }
     }
 // 底部滚动选择器
