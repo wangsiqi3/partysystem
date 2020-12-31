@@ -11,12 +11,6 @@
         <div class="formItem">         
           <label for="sex">性别</label>
           <input autoComplete="off" type="text" :value='params.sex'  id="sex" :readonly="isRead" name='sex'>
-          <!-- <div class="sex">
-           <el-radio-group v-model="radio1" :readonly="isRead" text-color='#fff' fill='red'>
-             <el-radio-button label="男" name='sex' id="sex" :checked='params.sex=="男"'></el-radio-button>
-             <el-radio-button label="女" name='sex' id="sex" :checked='params.sex=="女"'></el-radio-button>
-           </el-radio-group>
-          </div> -->
         </div>
         <div class="formItem">
             <label for="nation">民族</label>
@@ -47,12 +41,6 @@
         <div class="formItem">         
           <label for="category">人员类别</label>
           <input autoComplete="off" type="text"  id="category" :readonly="isRead" :value="params.category" name='category'>
-          <!-- <div class="category">
-           <el-radio-group v-model="radio2" :readonly="isRead"  text-color='#fff' fill='red'>
-             <el-radio-button label="正式党员" name='category' id='category' :checked="params.category=='正式党员'"></el-radio-button>
-             <el-radio-button label="预备党员" name='category' id="category" :checked="params.category=='预备党员'"></el-radio-button>
-           </el-radio-group>
-          </div> -->
         </div>
         <div class="formItem">
             <label for="branch">转入支部</label>
@@ -107,44 +95,25 @@
 
 <script>
 import Homehead from './Homehead'
-import Toast from '../../components/toast/Toast'
 export default {
  name:'Infoform',
  data () {
       return {
-        radio1: '男',
-        radio2: '正式党员',
-        radio3:'是',
         params:{},
-        value:"",
-        background:"",
-        branch:"",
-        isActive:true,
-        flag:false,
-        show:true,
         isRead:true,
-        toast:false,
-        message:"",
         idNumber:"",
       };
   },
   components:{
    Homehead,
-   Toast
   },
   mounted(){
     this.idNumber = this.$route.query.idNumber
-    console.log(this.idNumber); //拿到参数：填写的信息
     this.$axios.post('/getInfo',{idNumber:this.idNumber}).then(res=>{
-           console.log('请求回来啦');
            this.params=res.data
-           console.log(res);
-           console.log(this.params);
        })
   },
   methods:{
-    // http://localhost:8080/home/infoshow?idNumber=445221199909262220
-    // http://localhost:8080/home/infoshow?idNumber=445221199909268888
 }
 }
 </script>

@@ -1,7 +1,7 @@
 <template>
    <div id="#Infowrite">
      <Homehead :show1='true' :show2='false'></Homehead>
-     <Infoform></Infoform>  
+     <Infoform :Params='params'></Infoform>  
      
    </div>
 </template>
@@ -11,9 +11,17 @@ import Homehead from './Homehead'
 import Infoform from './Infoform'
 export default {
   name:'Infowrite',
+  data(){
+    return {
+      params:{}
+    }
+  },
   components:{
       Homehead,
       Infoform
+  },
+  mounted(){
+     this.params = this.$route.params
   }
 }
 </script>

@@ -1,35 +1,45 @@
 <template>
 
   <div id="Infoform">
-    <Homehead :show1='false' :show2='false'></Homehead>
+      <div class="head"><Homehead></Homehead>
+    <div class="return" @click='modifySign()'><返回</div></div>
     <form name='myform'>
      <div class="firstBox">
         <div class="formItem">
           <label for="username">姓名</label>
-          <input autoComplete="off" :readonly="true" @blur='blur($event)'  type="text" id='username' placeholder="姓名"  name='username' :value="params.username">  
+          <input autoComplete="off" :readonly="isRead" @blur='blur($event)'  type="text" id='username' placeholder="姓名"  name='username' :value="params.username">  
         </div>
         <div class="formItem">         
           <label for="sex">性别</label>
-          <input v-show='isRead' autoComplete="off" type="text" :value='params.sex' @blur='blur($event)' id="sex" placeholder="性别" :readonly="isRead" name='sex'> 
-           <select  v-show='!isRead' class="input" autoComplete="off" type="text" :value='params.sex' @blur='blur($event)' id="sex" placeholder="性别" name='sex' >
-                <option>男</option>
-                <option>女</option>
-            </select>
+          <input v-show='isRead' autoComplete="off" type="text" :value='params.sex' @blur='blur($event)' id="sex" placeholder="性别" :readonly="isRead" name='sex'>  
+          <el-select v-show='!isRead' id="sex" @change='change(value)' v-model='value' placeholder="请选择">
+              <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
         </div>
         <div class="formItem">
             <label for="nation">民族</label>
-             <input v-show='isRead' autoComplete="off" type="text" :value='params.nation' @blur='blur($event)' id="nation" placeholder="民族" :readonly="isRead" name='sex'> 
-            <select v-show='!isRead' class="input" autoComplete="off" type="text" @blur='blur($event)' id="nation" name='nation' placeholder="民族" :value='params.nation'>
-                <option v-for='(item,index) in this.nations' :key='"-"+index'>{{item}}</option>
-            </select>
+            <input v-show='isRead' autoComplete="off" type="text" :value='params.nation' @blur='blur($event)' id="nation" placeholder="民族" :readonly="isRead" name='sex'> 
+            <el-select v-show='!isRead' id="nation" @change='change3(value3)' v-model='value3' placeholder="请选择">
+              <el-option
+                v-for="item in options3"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
         </div>
         <div class="formItem">
             <label for="idNumber">身份证号</label>
-            <input autoComplete="off" type="number" :readonly="true" id='idNumber' placeholder="身份证号" name='idNumber' :value='params.idNumber'>  
+            <input autoComplete="off" type="number" @blur='isCorrect($event)' :readonly="isRead" id='idNumber' placeholder="身份证号" name='idNumber' :value='params.idNumber'>  
         </div>
         <div class="formItem">
             <label for="birthDate">出生日期</label>
-            <input autoComplete="off" type="date" @blur='blur($event)' :readonly="isRead" id='birthDate' placeholder="出生日期" name='birthDate' :value='params.birthDate'>  
+            <input autoComplete="off" type="date" @blur='blur($event)' :readonly="isRead" id='birthDate' placeholder="出生日期" name='birthDate' v-model='params.birthDate'>  
         </div>
      </div>
      <div class="secondBox">
@@ -40,37 +50,43 @@
        <div class="formItem">
             <label for="background">学历</label>
             <input v-show='isRead' autoComplete="off" type="text"  @blur='blur($event)' :readonly="isRead" id="background" name='background' placeholder="最高学历" :value='params.background'> 
-            <select v-show='!isRead' class="input" autoComplete="off" type="text"  @blur='blur($event)'  id="background" name='background' placeholder="最高学历" :value='params.background'>
-                <option>博士后</option>
-                <option>博士</option>
-                <option>研究生</option>
-                <option>本科</option>
-                <option>专科</option>
-                <option>高中</option>
-                <option>初中</option>
-                <option>小学</option>
-            </select>
+            <el-select v-show='!isRead' id="background" @change='change4(value4)' v-model='value4' placeholder="请选择">
+              <el-option
+                v-for="item in options4"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+            
         </div>
      </div>
      <div class="thirdBox">
         <div class="formItem">         
           <label for="category">人员类别</label>
           <input v-show='isRead' autoComplete="off" type="text" @blur='blur($event)' id="category" :readonly="isRead" :value="params.category" name='category'>
-          <select v-show='!isRead' class="input"  autoComplete="off" type="text" @blur='blur($event)' id="category" placeholder="人员类别" :value="params.category" name='category'>
-                <option>正式党员</option>
-                <option>预备党员</option>
-            </select>
+          <el-select v-show='!isRead' id="category" @change='change1(value1)' v-model='value1' placeholder="请选择">
+              <el-option
+                v-for="item in options1"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+         
         </div>
         <div class="formItem">
             <label for="branch">转入支部</label>
             <input v-show='isRead' autoComplete="off" type="text" @blur='blur($event)' id="branch" :readonly="isRead" name='branch' placeholder="组织全称" :value='params.branch'>  
-            <select v-show='!isRead' class="input"  autoComplete="off" type="text" @blur='blur($event)' id="branch" name='branch' placeholder="转入支部" :value='params.branch' >
-                <option>南方网第一党支部</option>
-                <option>南方网第二党支部</option>
-                <option>南方日报集团第一党支部</option>
-                <option>南方日报集团第二党支部</option>
-                <option>南方杂志党支部</option>
-            </select>
+            <el-select v-show='!isRead' id="branch" @change='change2(value2)' v-model='value2' placeholder="请选择">
+              <el-option
+                v-for="item in options2"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+        
         </div>  
         <div class="formItem">
             <label for="enterDate">入党日期</label>
@@ -91,10 +107,15 @@
         <div class="formItem">         
           <label for="normal">党籍正常</label>
           <input v-show='isRead' autoComplete="off" type="text" @blur='blur($event)' :value='params.normal' id="normal" name='normal' :readonly="isRead">
-          <select v-show='!isRead' class="input" autoComplete="off" type="text" @blur='blur($event)' :value='params.normal' id="normal" name='normal' >
-                <option>是</option>
-                <option>否</option>
-            </select>
+          <el-select v-show='!isRead' id="normal" @change='change5(value5)' v-model='value5' placeholder="请选择">
+              <el-option
+                v-for="item in options5"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+         
         </div>
         <div class="formItem">
             <label for="filesPlace">档案地</label>
@@ -104,7 +125,7 @@
      <div class="forthBox">
         <div class="formItem">
             <label for="phone">手机号码</label>
-            <input autoComplete="off" type="number" @blur='blur($event)' id='phone' :readonly="isRead" placeholder="手机号码" name='phone' :value='params.phone'>  
+            <input autoComplete="off" type="number" @blur='blurs($event)' id='phone' :readonly="isRead" placeholder="手机号码" name='phone' :value='params.phone'>  
         </div>
         <div class="formItem">
             <label for="address">家庭住址</label>
@@ -134,13 +155,73 @@ export default {
  name:'Infoform',
  data () {
       return {
-        radio1: '男',
-        radio2: '正式党员',
-        radio3:'是',
+        options: [{
+          value: '男',
+          label: '男'
+        }, {
+          value: '女',
+          label: '女'
+        }],
+        value: '',
+        options1: [{
+          value: '正式党员',
+          label: '正式党员'
+        }, {
+          value: '预备党员',
+          label: '预备党员'
+        }],
+        value1: '',
+        options2: [{
+          value: '南方网第一党支部',
+          label: '南方网第一党支部'
+        }, {
+          value: '南方网第二党支部',
+          label: '南方网第二党支部'
+        }, {
+          value: '南方日报集团第一党支部',
+          label: '南方日报集团第一党支部'
+        }, {
+          value: '南方日报集团第二党支部',
+          label: '南方日报集团第二党支部'
+        }, {
+          value: '南方杂志党支部',
+          label: '南方杂志党支部'
+        }],
+        value2: '',
+        options3:[],
+        value3:'',
+        options4: [{
+          value: '博士',
+          label: '博士'
+        }, {
+          value: '硕士',
+          label: '硕士'
+        }, {
+          value: '本科',
+          label: '本科'
+        }, {
+          value: '专科',
+          label: '专科'
+        }, {
+          value: '高中',
+          label: '高中'
+        }, {
+          value: '初中',
+          label: '初中'
+        }, {
+          value: '小学',
+          label: '小学'
+        }],
+        value4: '',
+        options5: [{
+          value: '是',
+          label: '是'
+        }, {
+          value: '否',
+          label: '否'
+        }],
+        value5: '',
         params:{},
-        value:"",
-        background:"",
-        branch:"",
         isActive:true,
         flag:false,
         show:true,
@@ -156,14 +237,72 @@ export default {
   },
   mounted(){
     this.params = this.$route.params
-    console.log(this.params); //拿到参数：填写的信息
+    this.value=this.$route.params.sex
+    this.value1=this.$route.params.category
+    this.value2=this.$route.params.branch
+    this.value3=this.$route.params.nation
+    this.value4=this.$route.params.background
+    this.value5=this.$route.params.normal
+    for(var i =0;i<this.nations.length;i++){
+      this.options3.push({value:this.nations[i],label:this.nations[i],})
+    }
   },
   methods:{
+    modifySign(){
+       this.$router.push({name:'Sign',params:this.params})
+    },
+    isCorrect(e){
+       let value = e.target.value
+       if(value.length!==18){
+            this.toast=true; 
+            this.message='请输入正确的身份证号码';
+            setTimeout(()=>{
+                this.toast=false;this.message=''
+                },
+                1500)
+         return
+        }
+        let param=e.target.id
+        this.params.idNumber=value
+      
+    },
     modify(){
         if(this.isActive){
             this.isActive=!this.isActive
         }
         this.isRead=false
+    },
+    blurs(e){
+      let value = e.target.value
+      if(value.length!==11){
+            this.toast=true; 
+            this.message='请输入正确的手机号码';
+            setTimeout(()=>{
+                this.toast=false;this.message=''
+                },
+                1500)
+            return
+        }
+       let param=e.target.id
+       this.params[param]=value
+    },
+    change(value){
+        this.params.sex=value
+    },
+    change1(value){
+        this.params.category=value
+    },
+    change2(value){
+        this.params.branch=value
+    },
+    change3(value){
+        this.params.nation=value
+    },
+    change4(value){
+        this.params.background=value
+    },
+    change5(value){
+        this.params.normal=value
     },
     blur(e){
        let value = e.target.value
@@ -174,23 +313,31 @@ export default {
                 this.toast=false;this.message=''
                 },
                 1500)
-            return
+         return
         }
        let param=e.target.id
        this.params[param]=value
-       console.log(this.params);
     },
     submit(){
         if(!this.isActive){
             this.isActive=!this.isActive
         }
-        this.$axios.post('/addMember',this.params)
+         this.$axios.post('/isExite',this.params).then(res=>{
+           if(res.data=='该用户已存在'){
+            this.toast=true; 
+            this.message=res.data;
+            setTimeout(()=>{
+                this.toast=false;this.message=''
+                },
+                1500)
+           
+           }else{
+               this.$axios.post('/addMember',this.params)
         setTimeout(() => { 
             this.$router.push({path:'/home/infoshow',query:{idNumber:this.params.idNumber}})
-            //  this.$router.push({name:'Infoshow',params:{idNumber:this.params.idNumber}})
-            //  http://localhost:8080/home/editdone?idNumber=445221199909262220
-        }, 500);
-        this.isRead=true
+        }, 200);
+           }
+        })
     },
     
 }
@@ -199,7 +346,24 @@ export default {
 
 <style scoped lang='scss'>
 @import '../../style/style.scss';
+  .return{
+  color:#fff;
+  position: fixed;
+  left: 10px;
+  top: 0.5rem;
+  font-size: 1.125rem;
+  width: 48px;
+  height: 48px;
+  line-height: 48px;
+  z-index: 99999;
+} 
+ select{
+      width: 200px!important;
+      position: relative;
+      left: -32px;
+  }
   #Infoform{
+    
       margin: 60px 10px 10px;
       position: relative;
       font-size: 14px;

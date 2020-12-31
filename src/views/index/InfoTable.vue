@@ -36,8 +36,7 @@
                     trigger="hover"
                     >
                   <div>
-                   <vue-qr :text="downloadData.url" :margin="0" colorDark="#f67b29" colorLight="#fff"   :size="200"></vue-qr>
-                   <a :href="downloadData.url">链接</a> 
+                   <vue-qr :text="downloadData.url" :margin="0" @click.native='toUrl()' colorDark="#f67b29" colorLight="#fff"   :size="100"></vue-qr>
                   </div>
                    
                   <el-button slot="reference"> {{item.nowDate&&'查看二维码'}}</el-button>
@@ -106,8 +105,7 @@ export default {
       currentPage:1,
       key:0,
       downloadData: {
-                url: 'http://localhost:8080/home/infoshow?idNumber=445221199909262220',
-                icon: 'http://localhost:8080/home/infoshow?idNumber=445221199909262220'
+                url: 'http://localhost:8080/home/infoshow?idNumber=445221199909262220'
             }
      }
  },
@@ -125,6 +123,9 @@ export default {
    vueQr
  },
  methods:{
+     toUrl(){
+        window.open(this.downloadData.url)
+     },
      select:function(e){
         this.show=false
         this.value = e.target.innerText
@@ -149,7 +150,6 @@ export default {
            name:this.name
           }
           this.$axios.post('/getlimitMember',this.params).then(res=>{
-            console.log(res.data); 
             if(res.data.length==0){
               this.member=res.data
               this.toast=true; 
@@ -189,7 +189,6 @@ export default {
      },
 
      showCode:function(idNumber){
-       console.log(idNumber);
        this.downloadData.url="http://localhost:8080/home/infoshow?idNumber="+idNumber
        this.downloadData.icon="http://localhost:8080/home/infoshow?idNumber="+idNumber
      },

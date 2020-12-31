@@ -1,18 +1,16 @@
 <template>
   <div class="sign">
-   <Homehead></Homehead>
+    <Homehead :show1='true'></Homehead>
     <div class="signPlace">
-    <div class="canvas">
-      <Canvas2 @comfirm='comfirm'></Canvas2>
-    </div>
-    
-       <!-- <canvas id="canvasbox" width="500" height="290" style="border:1px solid green; transform: rotate(90deg); margin:20px auto;display:block;"></canvas> -->
+      <div class="canvas">
+        <Canvas2 @comfirm='comfirm'></Canvas2>
+      </div>
+      
     </div>
   </div>
 </template>
 
 <script>
-
 import Homehead from './Homehead'
 import Canvas2 from './Canvas2.vue'
 export default {
@@ -29,9 +27,7 @@ export default {
 
  },
  mounted(){
-     console.log(222);
    this.params = this.$route.params
-   console.log(this.params); //拿到参数：填写的信息
  },
  methods:{
      clear:function(){
@@ -40,13 +36,15 @@ export default {
          }
      },
      comfirm:function(picture){
-         console.log(111);
-         console.log(picture);
+         this.params.url=picture
          if(this.isActive){
              this.isActive=!this.isActive
          }
         //  this.$router.push({path:'/home/editdone',query: {...this.params,url:picture}})
-         this.$router.push({name:'Editdone',params: {...this.params,url:picture}})
+         this.$router.push({name:'Editdone',params: {...this.params}})
+     },
+     toInforite(){
+       this.$router.push({name:'Infowrite',params:this.params})
      }
      
  }
@@ -55,15 +53,15 @@ export default {
 
 <style scoped lang='scss'>
 @import '../../style/style.scss';
+
+
   .signPlace{
-      height: calc(100vh - 60px);
-      width: 100%;
+      height: 100vh;
       overflow: hidden;
       .canvas{
           position: relative;
           left: -0px;
-          top: 8.25rem;
-          // transform: rotate(90deg);
+          top: 3rem;
       }
       .info{
          display: inline-block;

@@ -17,7 +17,6 @@ export default {
   name:"Canvas2",
    data() {
     return {
-    
       degree: 0 // 屏幕整体旋转的角度, 可取 -90,90,180等值
     };
   },
@@ -136,6 +135,8 @@ canvas {
 .btnBox {
   padding: 0 2%;
   box-sizing: border-box;
+  position: relative;
+  left: 130px;
   .btn {
     text-align: center;
     color: #fff;

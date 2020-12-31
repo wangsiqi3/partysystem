@@ -1,7 +1,7 @@
 <template>
   <div id="app2">
-      <!-- <router-link to="/home/edit"></router-link> -->
-    <router-view/>
+    <keep-alive include="Infowrite" ><router-view/></keep-alive>
+    
   </div>
 </template>
 
